@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 //스키마 생성 
 const userSchema = mongoose.Schema({
@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
     },
     role:{
         type:Number,
-        dafault:0 
+        default:0 
     },
     image:String,
     token:{
@@ -29,7 +29,7 @@ const userSchema = mongoose.Schema({
     },
     tokenExp:{
         type:Number
-    },
+    }
 
 });
 
@@ -37,4 +37,4 @@ const userSchema = mongoose.Schema({
 const User = mongoose.model('User',userSchema);
 
 //유저 모델을 다른 폴더에서도 사용할 수 있게 
-module.exports = {User}
+module.exports = {User};

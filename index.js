@@ -13,18 +13,46 @@
     })
 */
 
-const express = require('express'); //express 모듈 가져오기
-const app = express(); //express app만들기
-const port = 5000;
+const express = require('express') //express 모듈 가져오기
+const app = express() //express app만들기
+const port = 4000
+const bodyParser = require('body-parser') //body-parser 모듈 가져오기 
+const {User} = require("./models/User")
 
-const mongoose = require('mongoose'); //mogoose 모듈 가져오기(mongoDb 편하게 사용하게 해주는 lib)
+// 참고 express 4.0 이상부턴 body-parser가 내장됨. 
+// body-parser 설정 
+// application/x-www-form-urlencoded 타입 가져올수 있게
+app.use(bodyParser.urlencoded({extended:true}))
+// application/json 타입 가져올수 있게
+app.use(bodyParser.json)
+
+
+const mongoose = require('mongoose') //mongoose 모듈 가져오기(mongoDb 편하게 사용하게 해주는 lib)
+// mongo db connect
 mongoose.connect('mongodb+srv://soonshine:rnjscnltk12@boilerplate.9zqjw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',{
     //useNewUrlParser : true, useUnifiedTopology : true, useCreateIndex : true, useFindAndModify : false
     //위 옵션은 6.0 이상부턴 기본 적용이 되므로 주석처리 
-}).then(()=> console.log('MongoDB Connected ...')) //정상적으로 연결
+}).then(()=> console.log('MongoDB Connected ...'))
 .catch(err =>  console.log(err));//연결 오류 
 
-app.get('/',(req,res) => res.send('Hello world'));
+app.get('/',(req,res) => res.send('Hello world'))
 
-app.listen(port,()=> console.log(`Example app listening on port ${port}!`));
+
+app.post('/register',(req,res)=>{
+    
+    //회원가입에 할때 필요한 정보들을 client에서 가져오면 그것들을 db에 저장
+
+    const user = new User(req.body);
+
+    user.save((err,userInfo)=>{
+        if(err) return res.json({success:false,err})
+        
+        return res.status(200).json({
+            success:true
+        })
+    })
+})
+
+
+app.listen(port,()=> console.log(`Example app listening on port ${port}!`))
 

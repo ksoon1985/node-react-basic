@@ -18,6 +18,7 @@ const app = express() //express app만들기
 const port = 4000
 const bodyParser = require('body-parser') //body-parser 모듈 가져오기 
 const {User} = require("./models/User")
+const config = require("./config/key")
 
 // 참고 express 4.0 이상부턴 body-parser가 내장됨. 
 // body-parser 설정 
@@ -29,7 +30,7 @@ app.use(bodyParser.json())
 
 const mongoose = require('mongoose') //mongoose 모듈 가져오기(mongoDb 편하게 사용하게 해주는 lib)
 // mongo db connect
-mongoose.connect('mongodb+srv://soonshine:rnjscnltk12@boilerplate.9zqjw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',{
+mongoose.connect(config.mongoURI,{
     //useNewUrlParser : true, useUnifiedTopology : true, useCreateIndex : true, useFindAndModify : false
     //위 옵션은 6.0 이상부턴 기본 적용이 되므로 주석처리 
 }).then(()=> console.log('MongoDB Connected ...'))

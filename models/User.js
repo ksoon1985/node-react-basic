@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const saltRounds = 10
+const jwt = require('jsonwebtoken')
 
 //스키마 생성 
 const userSchema = mongoose.Schema({
@@ -58,6 +59,68 @@ userSchema.pre('save',function(next){
         next()
     }
 })
+
+// 비밀번호 비교
+userSchema.methods.comparePassword = function(plainPassword,cb){
+    
+    bcrypt.compare(plainPassword,this.password,function(err,isMatch){
+        if(err) return cb(err)
+        
+        cb(null,isMatch) //에러가 없고 비번이 같으면 
+
+    })
+}
+
+// 토큰 생성 
+userSchema.methods.generateToken = function(cb){
+    
+    var user = this;
+    console.log(this);
+    
+    // jsonwebtoken을 이용해서 token을 생성하기
+    var token = jwt.sign(user._id.toHexString(),'secretToken')
+
+    /*
+        user._id + 'secretToken' = token
+        'secretToken' -> user._id 
+     */
+
+    user.token = token
+    user.save(function(err,user){
+        if(err) return cb(err)
+
+        cb(null,user)
+    })
+
+}
+
+/*
+    참고 
+    methods vs static
+    methods 는 객체 인스턴스를 만들어야 사용 가능 
+    ex) const user = new User()
+    user.generateToken() 
+
+    statics 은 객체 인스턴스를 만들지 않아도 사용 가능
+    ex) User.findByToken() 
+*/
+userSchema.statics.findByToken = function(token,cb){
+    var user = this;
+    console.log(this);
+
+    // 토큰을 decode 한다.
+    jwt.verify(token,'secretToken',function(err,decoded){
+    
+        //유저 아이디를 이용해서 유저를 찾은 다음에
+        //클라이언트에서 가져온 token과 db에 보관된 토큰이 일치하는지 확인
+        
+        user.findOne({ "_id":decoded,"token":token},function(err,user){
+            if(err) return cb(err)
+            cb(null,user)
+        })
+
+    });
+}
 
 //모델 생성
 const User = mongoose.model('User',userSchema);

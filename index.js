@@ -24,7 +24,7 @@ const {User} = require("./models/User")
 // application/x-www-form-urlencoded 타입 가져올수 있게
 app.use(bodyParser.urlencoded({extended:true}))
 // application/json 타입 가져올수 있게
-app.use(bodyParser.json)
+app.use(bodyParser.json())
 
 
 const mongoose = require('mongoose') //mongoose 모듈 가져오기(mongoDb 편하게 사용하게 해주는 lib)

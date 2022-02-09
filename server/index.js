@@ -64,6 +64,7 @@ app.post('/register',(req,res)=>{
 app.post('/login',(req,res)=>{
     
     //요청된 이메일을 db에서 있는지 찾는다.
+    //참고 mogondb에서 제공해주는 함수 
     User.findOne({email:req.body.email},(err,user)=>{
 
         if(!user){

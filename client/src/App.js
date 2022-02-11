@@ -4,18 +4,23 @@ import { BrowserRouter as Router, Routes, Route, Outlet, Link } from "react-rout
 import LandingPage from './components/views/LandingPage/LandingPage'
 import LoginPage from './components/views/LoginPage/LoginPage'
 import RegisterPage from './components/views/RegisterPage/RegisterPage'
+import Auth from './hoc/auth'
 
 export default function App() {
+
+  const NewLandingPage = Auth(LandingPage,null);
+  const NewLoginPage = Auth(LoginPage,false);
+  const NewRegisterPage = Auth(RegisterPage,false);
+
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage /> } />
+      <Routes>
+        <Route path="/" element={<NewLandingPage />} />
+        <Route path="/login" element={<NewLoginPage />} />
+        <Route path="/register" element={<NewRegisterPage />} />
 
         <Route path="*" element={<NoMatch />} />
-      </Route>
-    </Routes>
+      </Routes>
+
   );
 }
 
